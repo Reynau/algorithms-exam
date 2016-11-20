@@ -59,24 +59,53 @@ vector<uint> dijkstra(map<uint, vii> adjacentList, int source) {
 
 void getCase () {
     uint n, m;
-    cout << "Insert n and m" << endl;
+    //cout << "Insert n and m" << endl;
     cin >> n >> m;
 
     map<uint, vii> adjacencyMap;
     for (; m > 0; --m) {
-        cout << "Insert u v d" << endl;
+        //cout << "Insert u v d" << endl;
         uint u, v, d;
         cin >> u >> v >> d;
-        vii aux = adjacencyMap[u];
-        aux.push_back(ii(v,d));
-        adjacencyMap[u] = aux;
+        vii aux1 = adjacencyMap[u];
+        vii aux2 = adjacencyMap[v];
+        aux1.push_back(ii(v,d));
+        aux2.push_back(ii(u,d));
+        adjacencyMap[u] = aux1;
+        adjacencyMap[v] = aux2;
     }
 
-    uint firefightBase = 0;
-    uint firedCity = 4;
+    uint k;
+    //cout << "Insert k" << endl;
+    cin >> k;
+    vector<uint> firefighterBases(k);
+    for (uint i = 0; i < k; ++i) {
+        //cout << "Insert firefighter base" << endl;
+        cin >> firefighterBases[i];
+    }
 
-    vector<uint> dis = dijkstra(adjacencyMap, firefightBase);
-    cout << dis[firedCity] << endl;
+    uint q;
+    //cout << "Insert q" << endl;
+    cin >> q;
+    for (uint i = 0; i < q; ++i) {
+        uint query;
+        //cout << "Insert query" << endl;
+        cin >> query;
+        vector<uint> dis = dijkstra(adjacencyMap, query);
+        ii min(query, INF);
+        for (int i = 0; i < firefighterBases.size(); ++i) {
+            uint pos = firefighterBases[i];
+            if (dis[pos] > 0) {
+                if (dis[pos] == min.second)
+                    min.first = (pos < min.first) ? pos : min.first;
+                else if (dis[pos] < min.second) {
+                    min.first = pos;
+                    min.second = dis[pos];
+                }
+            }
+        }
+        cout << "To get to " << query << ", distance " << min.second << ", from city " << min.first << "." << endl;
+    }
 }
 
 int main() {
@@ -84,7 +113,7 @@ int main() {
     cin >> c;
 
     for (uint i = 0; i < c; ++i) {
-        cout << "Case #" << i << endl;
+        cout << "Case #" << i+1 << endl;
         getCase();
         cout << endl;
     }
